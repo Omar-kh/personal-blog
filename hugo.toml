@@ -1,0 +1,10 @@
+baseURL = 'https://example.org/'
+languageCode = 'en-us'
+title = "Omar's blog"
+theme = 'mini'
+
+[params]
+copyright = " "
+showPowerBy = false
+
+customCss = ["css/custom.css"]
