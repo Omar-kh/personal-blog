@@ -1,4 +1,4 @@
-baseURL = 'https://example.org/'
+baseURL = 'https://omarkh.dev/'
 languageCode = 'en-us'
 title = "Omar's blog"
 theme = 'mini'
@@ -6,5 +6,20 @@ theme = 'mini'
 [params]
 copyright = " "
 showPowerBy = false
-
+author = "My self"
 customCss = ["/css/custom.css"]
+archive = "Blog"
+links = [
+    {"name"="Blog", "path"="/posts/"},
+    {"name"="Tags", "path"="/tags/"},
+    {"name"="Categories", "path"="/categories/"},
+    {"name"="About", "path"="/about/"},
+]
+enableRSS = true
+
+[permalinks]
+[permalinks.section]
+blog = "/posts/"
+    
+[markup.highlight]
+style = "base16-snazzy"

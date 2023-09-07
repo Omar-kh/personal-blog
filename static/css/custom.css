@@ -1,3 +1,63 @@
 .extend-profile {
     margin-bottom: 60px;
 }
+
+.extend-profile h1 {
+    margin-bottom: 15px;
+}
+
+nav.custom-navigation {
+    display: flex;
+    justify-content: space-between;
+    /* This separates the first and last children */
+    align-items: center;
+    /* This vertically centers all items */
+    /* padding: 20px 20px 0; */
+    background: rgba(255, 255, 255, 0.9);
+    margin: 0 auto;
+    z-index: 100;
+}
+
+nav.custom-navigation .right-links {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* Optional: to put a small space between right-aligned links */
+}
+
+nav.custom-navigation a {
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+nav.custom-navigation a.current {
+    text-decoration: underline;
+}
+
+#list-page .item div{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#list-page .item .title {
+    display: unset;
+    width: 75%;
+}
+
+#list-page .item .date {
+    position: unset;
+    float: unset;
+    flex-grow: 1;
+}
+
+.profile a.button {
+    background-color: #2191ec;
+    color: #fff;
+    padding: 7px;
+}
+
+.profile a.button:hover {
+    background: #5badf0;
+}
