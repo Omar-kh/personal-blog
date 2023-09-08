@@ -1,25 +1,33 @@
 baseURL = 'https://omarkh.dev/'
 languageCode = 'en-us'
-title = "Omar's blog"
 theme = 'mini'
+title = "Omar's blog"
 
 [params]
-copyright = " "
-showPowerBy = false
-author = "My self"
-customCss = ["/css/custom.css"]
 archive = "Blog"
-links = [
-    {"name"="Blog", "path"="/posts/"},
-    {"name"="Tags", "path"="/tags/"},
-    {"name"="Categories", "path"="/categories/"},
-    {"name"="About", "path"="/about/"},
-]
+author = "My self"
+copyright = " "
+customCss = ["/css/custom.css"]
 enableRSS = true
+links = [
+  {"name" = "Blog", "path" = "/posts/"},
+  {"name" = "Tags", "path" = "/tags/"},
+  {"name" = "Categories", "path" = "/categories/"},
+  {"name" = "Series", "path" = "/series/"},
+  {"name" = "About", "path" = "/about/"},
+]
+showPowerBy = false
 
 [permalinks]
 [permalinks.section]
 blog = "/posts/"
-    
+[permalinks.page]
+
+blog = "/posts/:slug/"
 [markup.highlight]
 style = "base16-snazzy"
+
+[taxonomies]
+category = 'categories'
+series = 'series'
+tag = 'tags'
