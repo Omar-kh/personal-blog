@@ -117,6 +117,38 @@ Rolling out our own rudimentary HTTP server using Python’s socket library can 
 
 **Simple HTTP Server with Python**
 
+At its simplest, writing a barebones HTTP server using the `socket` library in Python would resemble something like this:
+
+```python
+import socket
+
+HOST, PORT = '127.0.0.1', 8080
+
+# Create a new socket using the given address family and socket type
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket.bind((HOST, PORT))
+server_socket.listen(5)
+print(f"Server listening on {HOST}:{PORT}")
+
+while True:
+    client_socket, address = server_socket.accept()
+    request = client_socket.recv(1024).decode('utf-8')
+    print(f"Received request:\n{request}")
+    response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello, World!"
+    client_socket.sendall(response.encode())
+    client_socket.close()
+```
+
+Let's go through it, step-by-step.
+
+In the first statements, we've imported the socket module and defined the host and port we want our server to run on. The `socket.socket()` method initializes a new socket (or endpoint) for network communication. This is where the magic starts:
+
+- `socket.AF_INET`: This is the address family for the socket. `AF_INET` corresponds to IP version 4 (IPv4). There's also `AF_INET6` for IP version 6, but for simplicity, we're sticking with IPv4. The choice of address family determines what kind of addresses can be used with this socket and what kind of network it can speak over.
+
+- `socket.SOCK_STREAM`: This is the type of socket we're creating. `SOCK_STREAM` means it's a TCP socket. TCP (Transmission Control Protocol) is one of the main transport protocols in the IP suite and is connection-based, guaranteeing the delivery of packets in the order they were sent. This makes it suitable for transmitting things like HTTP, where the order and integrity of packets is important. If we were working with a protocol like UDP (User Datagram Protocol), which is connectionless and doesn't guarantee the order of delivery, we'd use `SOCK_DGRAM` instead.
+
+Choosing `AF_INET` and `SOCK_STREAM` means we're creating a TCP socket that communicates using IPv4 addresses.
+
 ```python
 import socket
 
@@ -126,25 +158,19 @@ HOST, PORT = '127.0.0.1', 8080
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 ```
 
-Here, we've imported the socket module and defined the host and port we want our server to run on. The `socket.socket()` method initializes a new socket (or endpoint) for network communication. This is where the magic starts:
-
-- `socket.AF_INET`: This is the address family for the socket. `AF_INET` corresponds to IP version 4 (IPv4). There's also `AF_INET6` for IP version 6, but for simplicity, we're sticking with IPv4. The choice of address family determines what kind of addresses can be used with this socket and what kind of network it can speak over.
-
-- `socket.SOCK_STREAM`: This is the type of socket we're creating. `SOCK_STREAM` means it's a TCP socket. TCP (Transmission Control Protocol) is one of the main transport protocols in the IP suite and is connection-based, guaranteeing the delivery of packets in the order they were sent. This makes it suitable for transmitting things like HTTP, where the order and integrity of packets is important. If we were working with a protocol like UDP (User Datagram Protocol), which is connectionless and doesn't guarantee the order of delivery, we'd use `SOCK_DGRAM` instead.
-
-Choosing `AF_INET` and `SOCK_STREAM` means we're creating a TCP socket that communicates using IPv4 addresses.
+Next, we associate the socket with a specific address and port on the machine using the `bind()` method. In our case, we're binding it to `127.0.0.1`, the loopback address, meaning the socket will listen for connections originating from the local machine.
 
 ```python
 server_socket.bind((HOST, PORT))
 ```
 
-`bind()` is essential. It associates the socket with a specific address and port on the machine. In our case, we're binding it to `127.0.0.1`, the loopback address, meaning the socket will listen for connections originating from the local machine.
+With `listen(5)`, our socket is now marked as "listening". The number 5 indicates the maximum number of queued connections our server will allow.
 
 ```python
 server_socket.listen(5)
 ```
 
-With `listen(5)`, our socket is now marked as "listening". The number 5 indicates the maximum number of queued connections our server will allow.
+The while loop ensures our server continuously accepts new connections. `accept()` waits for an incoming connection and returns a new socket representing the client, and the address of the client.
 
 ```python
 print(f"Server listening on {HOST}:{PORT}")
@@ -153,26 +179,24 @@ while True:
     client_socket, address = server_socket.accept()
 ```
 
-This while loop ensures our server continuously accepts new connections. `accept()` waits for an incoming connection and returns a new socket representing the client, and the address of the client.
+When working with sockets, it's critical to remember that data is transmitted over networks as bytes. This means that when we receive data from a client using the `recv()` method, the data comes in as bytes. In the code snippet below, we are doing two things:
+
+- Receiving data (in bytes) from the client (`recv(1024)`).
+- Decoding the byte data to a string using the UTF-8 character encoding (`decode('utf-8')`).
 
 ```python
     request = client_socket.recv(1024).decode('utf-8')
     print(f"Received request:\n{request}")
 ```
 
-When working with sockets, it's critical to remember that data is transmitted over networks as bytes. This means that when we receive data from a client using the `recv()` method, the data comes in as bytes. In the code snippet above, we are doing two things:
-
-- Receiving data (in bytes) from the client (`recv(1024)`).
-- Decoding the byte data to a string using the UTF-8 character encoding (`decode('utf-8')`).
+Similarly, when we're ready to send data back to the client, we formulate a basic HTTP response, convert (or encode) it into bytes using the UTF-8 character encoding before sending, and then send it back to the client using `sendall()`.
+After that, we close the client socket, effectively ending our communication with that client.
 
 ```python
     response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello, World!"
     client_socket.sendall(response.encode())
     client_socket.close()
 ```
-
-Similarly, when we're ready to send data back to the client, we formulate a basic HTTP response, convert (or encode) it into bytes using the UTF-8 character encoding before sending, and then send it back to the client using `sendall()`.
-After that, we close the client socket, effectively ending our communication with that client.
 
 Note that the code example provided will send a response regardless of the request's validity. In a real-world scenario, this could lead to a plethora of issues, from security vulnerabilities to unexpected behaviors.
 
@@ -183,6 +207,35 @@ if request.startswith("GET"):
     response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello, World!"
 else:
     response = "HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\nInvalid request!"
+```
+
+Resulting in the following code:
+
+```python {hl_lines=["15-20"],anchorlinenos=true,linenos=true}
+import socket
+
+HOST, PORT = '127.0.0.1', 8080
+
+# Create a new socket using the given address family and socket type
+
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket.bind((HOST, PORT))
+server_socket.listen(5)
+print(f"Server listening on {HOST}:{PORT}")
+
+while True:
+client_socket, address = server_socket.accept()
+request = client_socket.recv(1024).decode('utf-8')
+
+    if request.startswith("GET"):
+      response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello, World!"
+    else:
+      response = "HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\nInvalid request!"
+
+    print(f"Received request:\n{request}")
+    response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello, World!"
+    client_socket.sendall(response.encode())
+    client_socket.close()
 ```
 
 With this rudimentary validation, we're only accepting `GET` requests and rejecting any other types of requests with a `400 Bad Request` response. In reality, HTTP validation would be much more complex and might involve checking headers, the request body, or other aspects of the HTTP request.

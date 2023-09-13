@@ -19,11 +19,13 @@ links = [
 showPowerBy = false
 
 [permalinks]
+
 [permalinks.section]
 blog = "/posts/"
-[permalinks.page]
 
+[permalinks.page]
 blog = "/posts/:slug/"
+
 [markup.highlight]
 style = "base16-snazzy"
 
