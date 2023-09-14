@@ -1,0 +1,52 @@
+baseURL: "https://omarkh.dev/"
+languageCode: en-us
+theme: PaperMod
+title: Omar's blog
+enableRobotsTXT: true
+menu:
+  main:
+    - name: Blog
+      url: /archive/
+    - name: About
+      url: /about/
+    - name: Search
+      url: /search/
+    - name: Tags
+      url: /tags/
+    - name: Series
+      url: /series/
+params:
+  author: Omar
+  socialIcons:
+    - name: github
+      url: "https://github.com/Omar-kh"
+    - name: rss
+      url: /index.xml
+  ShowToc: true
+  TocOpen: true
+  ShowReadingTime: true
+  ShowPostNavLinks: true
+  ShowCodeCopyButtons: true
+  ShowShareButtons: true
+  homeInfoParams:
+    Content: Because having a small corner of the world wide web is nice.
+    Title: Omar's blog
+  assets:
+    favicon: /images/favicon_ok.ico
+permalinks:
+  page:
+    blog: /posts/:slug/
+  section:
+    blog: /posts/
+markup:
+  highlight:
+    style: dracula
+taxonomies:
+  category: categories
+  series: series
+  tag: tags
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON # is necessary
