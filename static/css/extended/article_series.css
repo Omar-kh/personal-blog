@@ -32,8 +32,3 @@
     color: inherit;
     /* Use the same color as the rest of the text, or pick a specific color if needed */
 }
-
-.article-series .list-group .list-group-item a:hover {
-    text-decoration: underline;
-    /* Underline when hovering over it */
-}

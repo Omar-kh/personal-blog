@@ -12,11 +12,11 @@ series:
   - Building a Python HTTP server
 ---
 
-I recall my childhood days, when out of sheer curiosity, I'd dismantle my toys, seeking their hidden mechanics. That same thirst for knowledge persists. In our previous rendezvous, we pieced together a basic HTTP server, akin to assembling a digital toy train. It might have seemed straightforward, but the underlying intricacies were captivating.
+I recall my childhood days, when out of sheer curiosity, I'd dismantle my toys, seeking their hidden mechanics. That same thirst for knowledge persists. In our previous [rendezvous]({{< relref "introduction.md#setting-the-stage-for-building-our-own-http-server" >}}), we pieced together a basic HTTP server, akin to assembling a digital toy train. It might have seemed straightforward, but the underlying intricacies were captivating.
 
 So in this article, I aim to demystify the socket library's inner workings. I will delve into how it turns our Pythonic method calls into tangible system-level actions. Specifically, we'll explore its interaction with the OS, the steps it takes to establish and manage network connections, and how it handles potential errors or setbacks.
 
-# Socket Abstractions: A Closer Look
+## Socket Abstractions: A Closer Look
 
 In the realm of network programming, the term "socket" gets tossed around a lot. But to fully appreciate its significance, it's crucial to delve into the details.
 
@@ -26,14 +26,14 @@ A socket is essentially a bridge for communication between two machines over a n
 
 In the realm of TCP/IP (which we're primarily dealing with here), every single connection is uniquely identified by a combination of four elements:
 
-1. Local IP Address
-2. Local Port
-3. Foreign IP Address
-4. Foreign Port
+1. **Local IP Address**
+2. **Local Port**
+3. **Foreign IP Address**
+4. **Foreign Port**
 
 This quartet is commonly termed a **TCP socket pair**. If you picture this like a postal system, the local IP and port would be your home address, while the foreign IP and port would be the destination you're sending mail to (or receiving from). The term "socket" often refers to the combination of an IP address and a port, marking one end of the connection.
 
-For instance, given the example socket pair {10.10.10.2:49152, 12.12.12.3:8888}, the first set {10.10.10.2:49152} identifies one endpoint (like a client), and the second set {12.12.12.3:8888} identifies the other endpoint (such as a server). These sockets facilitate the unique identification of both ends in a communication link.
+For instance, given the example socket pair `{10.10.10.2:49152, 12.12.12.3:8888}`, the first set `{10.10.10.2:49152}` identifies one endpoint (like a client), and the second set `{12.12.12.3:8888}` identifies the other endpoint (such as a server). These sockets facilitate the unique identification of both ends in a communication link.
 
 ### The Socket Life Cycle in a Server Context
 
@@ -58,7 +58,7 @@ SERVER_ADDRESS = ('127.0.0.1', 8080)
 listen_socket.bind(SERVER_ADDRESS)
 ```
 
-Here, the socket is being tied to the IP address '127.0.0.1' and port '8080'. Once bound, the socket awaits incoming traffic on that address.
+Here, the socket is being tied to the IP address `'127.0.0.1'` and port `'8080'`. Once bound, the socket awaits incoming traffic on that address.
 
 From the system's perspective, binding is essential for differentiating between applications. Multiple applications can run on a machine, each needing its communication channel. By binding sockets to distinct addresses, the system ensures each application has a unique communication endpoint.
 
@@ -68,7 +68,7 @@ From the system's perspective, binding is essential for differentiating between 
 listen_socket.listen(REQUEST_QUEUE_SIZE)
 ```
 
-The server declares its intent to accept incoming connections. The REQUEST_QUEUE_SIZE parameter specifies the maximum number of queued connections the system should maintain. If new connections arrive when the queue is full, they might be rejected.
+The server declares its intent to accept incoming connections. The `REQUEST_QUEUE_SIZE` parameter specifies the maximum number of queued connections the system should maintain. If new connections arrive when the queue is full, they might be rejected.
 
 From a system perspective, the listening state signifies that the server is not just passively bound to an address but is actively awaiting connection attempts. During this phase, the operating system keeps track of incoming connection requests for that specific socket. It queues them up to the specified limit, ensuring the application can process them in an orderly manner.
 
@@ -78,17 +78,17 @@ These lifecycle steps lay the groundwork for network communication. They give ap
 
 Now, while sockets are our main avenue for communication, the system that manages this entire orchestration involves more actors and layers. Two such crucial elements are processes and file descriptors, without which our understanding of socket operations remains incomplete.
 
-### Processes and File Descriptors: Bridging the Gap
+## Processes and File Descriptors: Bridging the Gap
 
 Every program you run (like our server) doesn't operate in isolation. It's executed as a **process** - a unique instance of that program in action, overseen by the operating system.
 
 However, a program, when communicating, needs a means to reference its communication channels or any files it accesses. Enter **File Descriptors**.
 
-**The UNIX Connection: Sockets as Files**
+### The UNIX Connection: Sockets as Files
 
-To understand what are File Descriptor, we need to look a little bit further into the UNIX-like operating systems (which includes Linux and macOS).
+To understand what File Descriptors are, we need to look a little bit further into the UNIX-like operating systems (which includes Linux and macOS).
 
-There's a foundational principle: everything is a file. This philosophy doesn't just extend to what we traditionally think of as files (like documents or images) but also to hardware devices and sockets. Every "file" is blessed with a unique, non-negative integer by the operating system upon its creation, called the File Descriptor. This descriptor is the key by which programs, like our server, interact with their respective files or sockets.
+There's a foundational principle here: everything is a file. This philosophy doesn't just extend to what we traditionally think of as files (like documents or images) but also to hardware devices and sockets. Every "file" is blessed with a unique, non-negative integer by the operating system upon its creation, called the File Descriptor. This descriptor is the key by which programs, like our server, interact with their respective files or sockets.
 
 In Python, when you create a socket, you're handed back a socket object. But behind the scenes, in the OS, that socket is represented and managed as a file descriptor. When you're reading from or writing to a socket, at the lowest levels, you're performing operations on a file descriptor.
 
@@ -99,7 +99,7 @@ client_socket.send(data)         # Writing to a socket
 client_socket.fileno()           # returns a non-negative integer
 ```
 
-# Into Uncharted Territory: Socket Interactions in the OS
+### Into Uncharted Territory: Socket Interactions in the OS
 
 So far, we've journeyed through the socket's lifecycle and touched on the UNIX philosophy linking sockets and files. Yet, I find myself pondering deeper questions: What truly happens when a socket "listens"? How does our system keep tabs on those elusive network packets? I must admit, this delves far from my usual area of knowledge. What I present here is an accumulation of information I've pieced together, hoping to shed some light on these intriguing topics. Together, let's navigate this uncharted territory and unearth the intricacies of system-managed sockets.
 
@@ -125,7 +125,7 @@ You might wonder, doesn't this mean the CPU is endlessly running a loop, checkin
 
 Your application, using high-level socket APIs, doesn't need to worry about these low-level details. The OS handles the complex tasks of managing the network stack, processing interrupts, demultiplexing packets, and managing socket queues. However, understanding this gives a better appreciation of what's happening under the hood when your server application "listens" on a socket and "accepts" new connections.
 
-# Wrapping Things Up
+## Wrapping Things Up
 
 Well, I must admit, diving into sockets and networking has been quite the learning experience for me. Throughout this article, I've tried to share the knowledge I've gathered—right from the socket lifecycle, to the fascinating connection between sockets and file descriptors in UNIX-like systems. Every time I think about the layers of complexity behind each network call, I gain a deeper appreciation for the wizards behind our daily-used technologies.
 
