@@ -1,0 +1,39 @@
+.article-series .series-header {
+    text-align: center;
+}
+
+/* List group properties */
+.article-series .list-group {
+    list-style: none;
+    /* No dots/bullets */
+    padding: 10px;
+    /* Some space around the list */
+}
+
+.article-series .list-group .list-group-item {
+    padding-left: 20px;
+    /* Indentation for list items */
+    margin-bottom: 5px;
+    /* Spacing between list items */
+    background-color: transparent;
+    /* No background on list items by default */
+}
+
+/* Emphasizing the active item */
+.article-series .list-group .list-group-item.active {
+    font-style: italic;
+    /* Darker gray background for active list item */
+}
+
+/* Styling for the links within list items */
+.article-series .list-group .list-group-item a {
+    text-decoration: none;
+    /* No underline by default */
+    color: inherit;
+    /* Use the same color as the rest of the text, or pick a specific color if needed */
+}
+
+.article-series .list-group .list-group-item a:hover {
+    text-decoration: underline;
+    /* Underline when hovering over it */
+}

@@ -22,13 +22,13 @@ Richard Feynman's wisdom echoes in my thoughts:
 
 As a developer who has been deploying these servers as the backbone of my applications, I realize it's high time to pull back the curtain. To dissect, explore, and reconstruct what has always been a tool but has the potential to be a teacher. So here I go, venturing into the labyrinthine world of HTTP, notebook and code editor at the ready.
 
-# A brief story about HTTP
+## A brief story about HTTP
 
-## From the 1980s to the modern days
+### From the 1980s to the modern days
 
 It's the 1980s, and the academic world is abuzz with excitement. Computers, once the size of entire rooms and accessible only to a select few, are finding their way into research institutions across the globe. But there's a challenge. These institutions want to share research, data, and insights, yet there's no universal way to do so seamlessly. Enter Tim Berners-Lee, a British computer scientist who's about to change the landscape forever.
 
-Imagine being Tim for a moment. You're presented with a plethora of disparate networks and systems, each with its own set of protocols. Your goal is simple yet profoundly ambitious: create a unified system to facilitate easy and efficient data exchange. The World Wide Web is born, and at its heart lies the Hypertext Transfer Protocol or HTTP.
+Imagine being Tim for a moment. You're presented with a plethora of disparate networks and systems, each with its own set of protocols. Your goal is simple yet profoundly ambitious: create a unified system to facilitate easy and efficient data exchange. The World Wide Web is born, and at its heart lies the **Hypertext Transfer Protocol** or **HTTP**.
 
 At its core, HTTP was designed as a stateless application-layer protocol to allow the exchange of hypertext documents, those with links that could lead you from one document to another. The initial version, HTTP/0.9, was simple. You, as the client, made a single-line request to a server, and it replied with a hypertext document. For instance:
 
@@ -57,13 +57,13 @@ As you can observe, the request and response now had structured headers. This wa
 
 But, with increased web traffic and more complex websites, HTTP/1.0's limitations became evident. For every single resource—a CSS file, an image, a script—a new connection had to be made, adding overhead and latency. Enter HTTP/1.1. Persistent connections were introduced, allowing multiple requests and responses in a single connection. Caching mechanisms were enhanced, ensuring not every request led to a server fetch, reducing bandwidth usage.
 
-The world beneath HTTP, the one that ensured data packets traveled reliably, was the Transmission Control Protocol (TCP). When you, as a hypothetical browser, sent an HTTP request, it got translated into multiple TCP packets, ensuring data integrity and ordered delivery. Think of it like this: if HTTP was the message in a letter, TCP was the postal system ensuring the letter got to its destination correctly and in order.
+The world beneath HTTP, the one that ensured data packets traveled reliably, was the **Transmission Control Protocol (TCP)**. When you, as a hypothetical browser, sent an HTTP request, it got translated into multiple TCP packets, ensuring data integrity and ordered delivery. Think of it like this: if HTTP was the message in a letter, TCP was the postal system ensuring the letter got to its destination correctly and in order.
 
 However, with the rise of multimedia content and the need for even faster data exchange, HTTP/2 emerged. It introduced multiplexing, allowing multiple messages to be sent at once without waiting for the first to finish. This was like sending several letters at once, even if you hadn't received a reply to your first one yet.
 
 From the 1980s to the present, the journey of HTTP has been about adapting to the needs of the time, always ensuring the web remained a space of seamless information exchange.
 
-## Diving deeper in the Requets / Responses cycle
+### Diving deeper in the Requets / Responses cycle
 
 In the early days of HTTP, it wasn't merely about sending a request and awaiting a response. The protocol has nuanced layers, often overshadowed by its primary functionality. Let's quickly delve into these intricate parts.
 
@@ -82,7 +82,7 @@ Headers such as User-Agent describe the client's software, while Accept indicate
 
 **HTTP Methods: Beyond the Basics**
 
-While most are familiar with GET and POST, HTTP boasts a diverse array of methods for various operations. As an example:
+While most are familiar with `GET` and `POST`, HTTP boasts a diverse array of methods for various operations. As an example:
 
 - `PUT` updates or even creates resources.
 - `DELETE` removes specified resources.
@@ -103,15 +103,15 @@ But there are quirkier ones: `429 Too Many Requests` warns about over-eagerness,
 
 In sum, HTTP isn't just about primary requests and responses. It's a choreographed dance of metadata, methods, status codes, and efficient connections, operating behind the scenes of our web interactions.
 
-## More Resources for the curious minds
+### More Resources for the curious minds
 
 Diving deeper into HTTP's intricacies? Here are a few invaluable resources to propel your journey:
 
-- RFCs (Request For Comments): The official documentation for internet standards. You can start with [RFC 2616](https://tools.ietf.org/html/rfc2616) for HTTP/1.1 specifics.
-- Mozilla Developer Network (MDN): An extensive [guide on HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP) with detailed explanations and examples.
-- W3C Specifications: The World Wide Web Consortium's [official documentation](https://www.w3.org/Protocols/) on web standards, including HTTP.
+- **RFCs (Request For Comments)**: The official documentation for internet standards. You can start with [RFC 2616](https://tools.ietf.org/html/rfc2616) for HTTP/1.1 specifics.
+- **Mozilla Developer Network (MDN)**: An extensive [guide on HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP) with detailed explanations and examples.
+- **W3C Specifications**: The World Wide Web Consortium's [official documentation](https://www.w3.org/Protocols/) on web standards, including HTTP.
 
-# Setting the Stage for Building Our Own HTTP Server
+## Setting the Stage for Building Our Own HTTP Server
 
 Rolling out our own rudimentary HTTP server using Python’s socket library can be an illuminating journey. This foundational example will attempt to demystify the dance between HTTP and its underlying protocol, TCP.
 
@@ -122,12 +122,14 @@ At its simplest, writing a barebones HTTP server using the `socket` library in P
 ```python
 import socket
 
-HOST, PORT = '127.0.0.1', 8080
+HOST = '127.0.0.1'
+PORT = 8080
+QUEUE_SIZE = 3
 
 # Create a new socket using the given address family and socket type
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.bind((HOST, PORT))
-server_socket.listen(5)
+server_socket.listen(QUEUE_SIZE)
 print(f"Server listening on {HOST}:{PORT}")
 
 while True:
@@ -152,7 +154,9 @@ Choosing `AF_INET` and `SOCK_STREAM` means we're creating a TCP socket that comm
 ```python
 import socket
 
-HOST, PORT = '127.0.0.1', 8080
+HOST = '127.0.0.1'
+PORT = 8080
+QUEUE_SIZE = 3
 
 # Create a new socket using the given address family and socket type
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -164,10 +168,10 @@ Next, we associate the socket with a specific address and port on the machine us
 server_socket.bind((HOST, PORT))
 ```
 
-With `listen(5)`, our socket is now marked as "listening". The number 5 indicates the maximum number of queued connections our server will allow.
+With `listen(QUEUE_SIZE)`, our socket is now marked as "listening". The number 5 indicates the maximum number of queued connections our server will allow.
 
 ```python
-server_socket.listen(5)
+server_socket.listen(QUEUE_SIZE)
 ```
 
 The while loop ensures our server continuously accepts new connections. `accept()` waits for an incoming connection and returns a new socket representing the client, and the address of the client.
@@ -211,31 +215,33 @@ else:
 
 Resulting in the following code:
 
-```python {hl_lines=["15-20"],anchorlinenos=true,linenos=true}
+```python {hl_lines=["15-20"]}
 import socket
 
-HOST, PORT = '127.0.0.1', 8080
+HOST = '127.0.0.1'
+PORT = 8080
+QUEUE_SIZE = 3
 
 # Create a new socket using the given address family and socket type
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.bind((HOST, PORT))
-server_socket.listen(5)
+server_socket.listen(QUEUE_SIZE)
 print(f"Server listening on {HOST}:{PORT}")
 
 while True:
-client_socket, address = server_socket.accept()
-request = client_socket.recv(1024).decode('utf-8')
+  client_socket, address = server_socket.accept()
+  request = client_socket.recv(1024).decode('utf-8')
 
-    if request.startswith("GET"):
-      response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello, World!"
-    else:
-      response = "HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\nInvalid request!"
-
-    print(f"Received request:\n{request}")
+  if request.startswith("GET"):
     response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello, World!"
-    client_socket.sendall(response.encode())
-    client_socket.close()
+  else:
+    response = "HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\nInvalid request!"
+
+  print(f"Received request:\n{request}")
+  response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello, World!"
+  client_socket.sendall(response.encode())
+  client_socket.close()
 ```
 
 With this rudimentary validation, we're only accepting `GET` requests and rejecting any other types of requests with a `400 Bad Request` response. In reality, HTTP validation would be much more complex and might involve checking headers, the request body, or other aspects of the HTTP request.
@@ -249,19 +255,18 @@ $ telnet 127.0.0.1 8080
 ```
 
 This telnet session establishes a TCP connection, letting you manually send an HTTP request. Our server then processes the request and returns the response.
-After connecting, type:
+After connecting and typing:
 
 ```http
 GET / HTTP/1.1
-Host: 127.0.0.1
 ```
 
-Press Enter twice. You should see the `Hello, World!` response from our server.
+We get to see the `Hello, World!` response from our server!
 
 **Behind the Curtain: The socket Library**
 
 This seemingly simple socket library is doing a ton of work behind the scenes. By providing an interface to the lower-level C socket API, it's allowing us to interact with the network stack directly. It manages buffer space, handles network errors, and much more.
 
-# A Glimpse Ahead
+## A Glimpse Ahead
 
-While we've seen the basics, there's much more depth to explore: threading for handling multiple clients, understanding the full gamut of HTTP headers, and delving deeper into the intricacies of the TCP/HTTP relationship. We'll be delving into these topics and more in the upcoming article.
+While we've touched upon the foundational aspects of sockets and HTTP in this article, the journey is far from over. We'll be diving deeper into the essence of networking, from the lifecycle of a socket to the UNIX philosophy that seamlessly interweaves the concept of files and sockets. Additionally, I plan to unearth the subtleties behind how the system actually "listens" to these sockets and the magic that occurs behind the scenes.

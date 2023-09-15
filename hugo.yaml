@@ -29,10 +29,11 @@ params:
   ShowCodeCopyButtons: true
   ShowShareButtons: true
   homeInfoParams:
-    Content: Because having a small corner of the world wide web is nice.
+    Content: A cozy corner in the expansive web.
     Title: Omar's blog
   assets:
     favicon: /images/favicon_ok.ico
+assetDir: static
 permalinks:
   page:
     blog: /posts/:slug/
