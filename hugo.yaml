@@ -3,6 +3,7 @@ languageCode: en-us
 theme: PaperMod
 title: Omar's blog
 enableRobotsTXT: true
+buildDrafts: true
 menu:
   main:
     - name: Blog
